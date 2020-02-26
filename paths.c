@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 18:31:41 by aortega-          #+#    #+#             */
-/*   Updated: 2020/02/24 19:00:38 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/02/26 11:25:39 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,4 +94,10 @@ void	ft_path_color(char *line, t_game *g, t_readmap *struc)
 		i++;
 		ft_pathcoloraux(i, g, struc);
 	}
+}
+
+int		ft_exit(void)
+{
+	exit(0);
+	return (0);
 }

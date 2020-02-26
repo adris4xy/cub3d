@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 17:35:04 by aortega-          #+#    #+#             */
-/*   Updated: 2020/02/24 18:47:37 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/02/26 11:23:18 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,22 +20,22 @@ void	ft_set_start(int x, int y, char *map, t_game *g)
 	if (*map == 'N')
 	{
 		g->dirx = -1;
-		g->diry = 0;
+		g->planey = 0.66;
 	}
 	else if (*map == 'S')
 	{
 		g->dirx = 1;
-		g->diry = 0;
+		g->planey = -0.66;
 	}
 	else if (*map == 'E')
 	{
-		g->dirx = 0;
 		g->diry = 1;
+		g->planex = 0.66;
 	}
 	else if (*map == 'W')
 	{
-		g->dirx = 0;
 		g->diry = -1;
+		g->planex = -0.66;
 	}
 }
 

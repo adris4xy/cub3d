@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 15:58:33 by aortega-          #+#    #+#             */
-/*   Updated: 2020/02/24 16:39:28 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/02/26 11:33:13 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,5 +118,7 @@ int		key_released(int key, t_game *g)
 		g->left = 0;
 	else if (key == 124)
 		g->right = 0;
+	else if (key == 53)
+		return (ft_exit());
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/11 12:09:14 by egarcia-          #+#    #+#             */
-/*   Updated: 2020/02/24 19:02:16 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/02/26 11:50:45 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ void	ft_step_sidedist(t_game *g);
 void	ft_printline(int x, t_game *g);
 //read_map.c
 void	ft_read_map(char *file, t_game *g);
+void	ft_read_mapaux(t_readmap *struc, t_game *g);
 void	ft_mapaux(t_game *g, int size, t_readmap *struc, int j);
 void	ft_map(char *map, t_game *g, t_readmap *struc);
 void	ft_set_start(int x, int y, char *map, t_game *g);
@@ -121,4 +122,5 @@ void	ft_pathcoloraux(int i, t_game *g, t_readmap *struc);
 void	ft_path_color(char *line, t_game *g, t_readmap *struc);
 void	ft_path_new(char *line, t_game *g);
 void	ft_path_s(char *line, t_game *g);
+int		ft_exit(void);
 #endif

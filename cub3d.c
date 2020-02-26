@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/11 15:55:09 by aortega-          #+#    #+#             */
-/*   Updated: 2020/02/24 16:51:29 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/02/26 11:22:40 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	init_data(t_game *g)
 {
 	g->posx = 5;
 	g->posy = 5;
-	g->planey = 0.66;
+	//g->planey = 0.66;
 	g->w = 0;
 	g->s = 0;
 	g->a = 0;
@@ -94,6 +94,7 @@ int		main(int argc, char **argv)
 	mlx_hook(g.win_ptr, 2, 1, key_pressed, &g);
 	mlx_hook(g.win_ptr, 3, 1, key_released, &g);
 	mlx_loop_hook(g.mlx_ptr, ft_master, &g);
+	mlx_hook(g.win_ptr, 17, 0, ft_exit, &g);
 	mlx_loop(g.mlx_ptr);
 	return (0);
 }
