@@ -3,131 +3,198 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egarcia- <emilioggo@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/24 15:53:04 by aortega-          #+#    #+#             */
-/*   Updated: 2020/02/24 17:29:37 by aortega-         ###   ########.fr       */
+/*   Created: 2020/02/14 16:44:03 by egarcia-          #+#    #+#             */
+/*   Updated: 2020/03/02 20:56:19 by egarcia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void	ft_printline(int x, t_game *g)
+int    set_side(s_game *g)
 {
-	int y;
-
-	y = 0;
-	while (y++ < g->mapheight - 1)
+    if (g->ray.posx > (double)g->ray.mapx)
 	{
-		if (y < g->drawstart)
-			g->buff[(y * g->mapwidth) + x] = g->c_color;
-		else if (y >= g->drawstart && y <= g->drawend)
-		{
-			g->texty = (int)g->textpos & (g->textheight - 1);
-			g->textpos += g->step;
-			g->color = g->texture[set_side(g)]
-						[g->textheight * g->texty + g->textx];
-			g->buff[(y * g->mapwidth + x)] = g->color;
-		}
-		else if (y > g->drawend)
-			g->buff[(y * g->mapwidth) + x] = g->f_color;
-	}
-}
-
-void	ft_step_sidedist(t_game *g)
-{
-	if (g->raydirx < 0)
-	{
-		g->stepx = -1;
-		g->sidedistx = (g->posx - g->mapx) * g->deltadistx;
-	}
-	else
-	{
-		g->stepx = 1;
-		g->sidedistx = (g->mapx + 1.0 - g->posx) * g->deltadistx;
-	}
-	if (g->raydiry < 0)
-	{
-		g->stepy = -1;
-		g->sidedisty = (g->posy - g->mapy) * g->deltadisty;
-	}
-	else
-	{
-		g->stepy = 1;
-		g->sidedisty = (g->mapy + 1.0 - g->posy) * g->deltadisty;
-	}
-}
-
-void	ft_ddaloop(t_game *g)
-{
-	while (g->hit == 0)
-	{
-		if (g->sidedistx < g->sidedisty)
-		{
-			g->sidedistx += g->deltadistx;
-			g->mapx += g->stepx;
-			g->side = 0;
-		}
+		if (g->ray.side == 1 && g->ray.posy > g->ray.mapy)
+			return (2);
+		else if (g->ray.side == 1 && g->ray.posy < g->ray.mapy)
+			return (3);
 		else
-		{
-			g->sidedisty += g->deltadisty;
-			g->mapy += g->stepy;
-			g->side = 1;
-		}
-		if (g->worldmap[g->mapx][g->mapy] > 0)
-			g->hit = 1;
+			return (0);
 	}
-	if (g->side == 0)
-		g->perpwalldist = (g->mapx - g->posx + (1 - g->stepx) / 2)
-						/ g->raydirx;
 	else
-		g->perpwalldist = (g->mapy - g->posy + (1 - g->stepy) / 2)
-						/ g->raydiry;
-}
-
-void	ft_calculate_texture(t_game *g)
-{
-	g->textnum = g->worldmap[g->mapx][g->mapy] - 1;
-	if (g->side == 0)
-		g->wallx = g->posy + g->perpwalldist * g->raydiry;
-	else
-		g->wallx = g->posx + g->perpwalldist * g->raydirx;
-	g->wallx -= floor(g->wallx);
-	g->textx = (int)(g->wallx * (double)g->textwidth);
-	if (g->side == 0 && g->raydirx > 0)
-		g->textx = g->textwidth - g->textx - 1;
-	if (g->side == 1 && g->raydiry < 0)
-		g->textx = g->textwidth - g->textx - 1;
-	g->step = 1.0 * g->textheight / g->lineheight;
-	g->textpos = (g->drawstart - g->mapheight / 2 + g->lineheight / 2)
-				* g->step;
-}
-
-void	ft_raycasting(t_game *g)
-{
-	int	x;
-
-	x = 0;
-	while (x++ < g->mapwidth)
 	{
-		g->camerax = 2 * x / (double)g->mapwidth - 1;
-		g->raydirx = g->dirx + g->planex * g->camerax;
-		g->raydiry = g->diry + g->planey * g->camerax;
-		g->mapx = (int)g->posx;
-		g->mapy = (int)g->posy;
-		g->deltadistx = fabs(1 / g->raydirx);
-		g->deltadisty = fabs(1 / g->raydiry);
-		g->hit = 0;
-		ft_step_sidedist(g);
-		ft_ddaloop(g);
-		g->lineheight = (int)(g->mapheight / g->perpwalldist);
-		g->drawstart = -g->lineheight / 2 + g->mapheight / 2;
-		if (g->drawstart < 0)
-			g->drawstart = 0;
-		g->drawend = g->lineheight / 2 + g->mapheight / 2;
-		if (g->drawend >= g->mapheight)
-			g->drawend = g->mapheight - 1;
-		ft_calculate_texture(g);
-		ft_printline(x, g);
+		if (g->ray.side == 1 && g->ray.posy > g->ray.mapy)
+			return (2);
+		else if (g->ray.side == 1 && g->ray.posy < g->ray.mapy)
+			return (3);
+		else
+			return (1);
 	}
 }
+
+void        get_textures(s_game *g)
+{
+    if (!(g->texptr = mlx_xpm_file_to_image(g->mlx_ptr, g->n_path, &g->tex[0].textwidth,
+            &g->tex[0].textheight)))
+        ft_error("ERROR, N_PATH WRONG", g);
+	g->tex[0].texture = (int *)mlx_get_data_addr(g->texptr, &g->tex[0].byte_per_pixel, &g->tex[0].size_line, &g->tex[0].endian);
+	if (!(g->texptr = mlx_xpm_file_to_image(g->mlx_ptr, g->so_path, &g->tex[1].textwidth,
+        &g->tex[1].textheight)))
+        ft_error("ERROR, SO_PATH WRONG", g);
+	g->tex[1].texture = (int *)mlx_get_data_addr(g->texptr, &g->tex[1].byte_per_pixel, &g->tex[1].size_line, &g->tex[1].endian);
+	if (!(g->texptr = mlx_xpm_file_to_image(g->mlx_ptr, g->w_path, &g->tex[2].textwidth, &g->tex[2].textheight)))
+        ft_error("ERROR, W_PATH WRONG", g);
+	g->tex[2].texture = (int *)mlx_get_data_addr(g->texptr, &g->tex[2].byte_per_pixel, &g->tex[2].size_line, &g->tex[2].endian);
+	if (!(g->texptr = mlx_xpm_file_to_image(g->mlx_ptr, g->e_path, &g->tex[3].textwidth, &g->tex[3].textheight)))
+         ft_error("ERROR, W_PATH WRONG", g);
+	g->tex[3].texture = (int *)mlx_get_data_addr(g->texptr, &g->tex[3].byte_per_pixel, &g->tex[3].size_line, &g->tex[3].endian);
+    if (g->f_path != NULL && g->f.texturefloor == 1)
+    {
+        g->texptr = mlx_xpm_file_to_image(g->mlx_ptr, g->f_path, &g->tex[4].textwidth, &g->tex[4].textheight);
+	    g->tex[4].texture = (int *)mlx_get_data_addr(g->texptr, &g->tex[4].byte_per_pixel, &g->tex[4].size_line, &g->tex[4].endian);
+    }
+    if (g->spray_path != NULL)
+    {
+        g->texptr = mlx_xpm_file_to_image(g->mlx_ptr, g->spray_path, &g->tex[5].textwidth, &g->tex[5].textheight);
+	    g->tex[5].texture = (int *)mlx_get_data_addr(g->texptr, &g->tex[5].byte_per_pixel, &g->tex[5].size_line, &g->tex[5].endian);
+    }
+}
+
+void        ft_raycasting(s_game *g, int selector)
+{
+    int x;
+    int y;
+    s_ray *p;
+    int textpath;
+
+    p = &g->ray;
+    
+    if (g->f.texturefloor == 1 && selector == 0)
+	            floor_raycasting(g);
+	x = 0;
+     
+    while (x++ < g->mapwidth)
+    {
+        textpath = set_side(g);
+        p->camerax = 2 * x / (double)g->mapwidth - 1;
+        p->raydirx = p->dirx + p->planex * p->camerax;
+        p->raydiry = p->diry + p->planey * p->camerax;
+        p->mapx = (int)p->posx;
+        p->mapy = (int)p->posy;
+        p->deltadistx = fabs(1 / p->raydirx);
+        p->deltadisty = fabs(1 / p->raydiry);
+
+        //p->deltadistx = sqrt(1 + (p->raydiry * p->raydiry) / (p->raydirx * p->raydirx));
+        //p->deltadisty = sqrt(1 + (p->raydirx * p->raydirx) / (p->raydiry * p->raydiry));
+        p->hit = 0;
+        if (p->raydirx < 0)
+        {
+            p->stepx = -1;
+            p->sidedistx = (p->posx - p->mapx) * p->deltadistx;
+        }
+        else
+        {
+            p->stepx = 1;
+            p->sidedistx = (p->mapx + 1.0 - p->posx) * p->deltadistx; 
+        }
+        if (p->raydiry < 0)
+        {
+            p->stepy = -1;
+            p->sidedisty = (p->posy - p->mapy) * p->deltadisty;
+        }
+        else
+        {
+            p->stepy = 1;
+            p->sidedisty = (p->mapy + 1.0 - p->posy) * p->deltadisty;
+        }
+        while (p->hit == 0)
+        {
+            if (p->sidedistx < p->sidedisty)
+            {
+                p->sidedistx += p->deltadistx;
+                p->mapx += p->stepx;
+                p->side = 0;
+            }
+            else
+            {
+                p->sidedisty += p->deltadisty;
+                p->mapy += p->stepy;
+                p->side = 1;
+            }
+            if (g->worldmap[p->mapx][p->mapy] == 2 && selector == 1)
+                g->boolean = 1;
+            if (g->worldmap[p->mapx][p->mapy] ==  1)
+                p->hit = 1;
+        }
+        if (g->boolean == 1 && selector == 1)
+            continue;
+        if (p->side == 0)
+            p->perpwalldist = (p->mapx - p->posx + (1 - p->stepx) / 2) / p->raydirx;
+        else
+            p->perpwalldist = (p->mapy - p->posy + (1 - p->stepy) / 2) / p->raydiry;
+        p->lineheight = (int)(g->mapheight / p->perpwalldist);
+        g->ren.drawstart = -p->lineheight / 2 + g->mapheight / 2;
+        if (g->ren.drawstart < 0)
+            g->ren.drawstart = 0;
+        g->ren.drawend = p->lineheight / 2 + g->mapheight / 2;
+        if (g->ren.drawend >= (int)g->mapheight)
+            g->ren.drawend = g->mapheight - 1;
+        // Calculo de texturas
+		p->texnum = g->worldmap[p->mapx][p->mapy] - 1;
+		// Calculo del valor Muro X
+        if (p->side == 0)
+            p->wallx = p->posy + p->perpwalldist * p->raydiry;
+        else
+            p->wallx = p->posx + p->perpwalldist * p->raydirx;
+        p->wallx -= floor((p->wallx));
+		
+        p->texx = (int)(p->wallx * (double)g->tex[textpath].textwidth);
+        if (p->side == 0 && p->raydirx > 0)
+            p->texx =g->tex[textpath].textwidth - p->texx - 1;
+        if (p->side == 1 && p->raydiry < 0)
+            p->texx = g->tex[textpath].textwidth - p->texx - 1;
+        p->step = 1.0 * g->tex[textpath].textwidth / p->lineheight;
+        p->texpos = (g->ren.drawstart - g->mapheight / 2 + p->lineheight / 2) * p->step;
+        y = 0;
+		
+		while (++y < g->mapheight - 1)
+		{
+			if (y < g->ren.drawstart)
+            {
+                if (y % 20 > rand() % g->mapwidth)
+                {
+                    if (rand() % 100  > 0.1)
+				        g->buff[(y * g->mapwidth) + x] = g->c_color;
+                else
+                   g->buff[(y * g->mapwidth) + x] = 255 * 65536 + 255 * 256 + 255;
+                }
+                else
+                    g->buff[(y * g->mapwidth) + x] = g->c_color;
+            }
+            else if (y >= g->ren.drawstart && y <= g->ren.drawend)
+			{
+				p->texy = (int)p->texpos & (g->tex[textpath].textheight - 1);
+				p->texpos += p->step;
+				p->color = g->tex[textpath].texture[g->tex[textpath].textheight * p->texy + p->texx];
+				if (p->side == 1)
+					p->color = (p->color >> 1) & 8355711;
+				g->buff[(y * g->mapwidth + x)] = p->color;
+				
+			}
+			else if (y > g->ren.drawend && g->f.texturefloor == 0)
+				g->buff[(y * g->mapwidth) + x] = g->f_color;	
+		}
+        g->zbuffer[x] = p->perpwalldist;
+    }
+    
+    if (selector  == 0)
+    {
+        shortsprites(g);
+        spray_raycasting(g);
+        ft_raycasting(g, 1);
+    }
+    
+    
+} 

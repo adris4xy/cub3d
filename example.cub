@@ -3,7 +3,7 @@ NO ./textures/tile077.xpm
 SO ./textures/tile164.xpm
 WE ./textures/tile243.xpm
 EA ./textures/tile246.xpm
-S ./path_to_the_sprite_texture
+S ./textures/scuanchy.xpm
 F 26,22,22
 C 88,5,5
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1

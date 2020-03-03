@@ -5,96 +5,74 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/11 15:55:09 by aortega-          #+#    #+#             */
-/*   Updated: 2020/02/27 16:06:07 by aortega-         ###   ########.fr       */
+/*   Created: 2020/02/14 13:03:33 by egarcia-          #+#    #+#             */
+/*   Updated: 2020/03/03 16:17:23 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-int		set_side(t_game *g)
-{
-	if (g->posx > (double)g->mapx)
-	{
-		if (g->side == 1 && g->posy > g->mapy)
-			return (2);
-		else if (g->side == 1 && g->posy < g->mapy)
-			return (3);
-		else
-			return (0);
-	}
-	else
-	{
-		if (g->side == 1 && g->posy > g->mapy)
-			return (2);
-		else if (g->side == 1 && g->posy < g->mapy)
-			return (3);
-		else
-			return (1);
-	}
-}
 
-void	get_textures(t_game *g)
+int    ft_master(s_game *g)
 {
-	g->texptr = mlx_xpm_file_to_image(g->mlx_ptr, g->n_path,
-				&g->textwidth, &g->textheight);
-	g->texture[0] = (int *)mlx_get_data_addr(g->texptr,
-				&g->bytes_per_pixel, &g->size_line, &g->endian);
-	g->texptr = mlx_xpm_file_to_image(g->mlx_ptr, g->so_path,
-				&g->textwidth, &g->textheight);
-	g->texture[1] = (int *)mlx_get_data_addr(g->texptr,
-				&g->bytes_per_pixel, &g->size_line, &g->endian);
-	g->texptr = mlx_xpm_file_to_image(g->mlx_ptr, g->e_path,
-				&g->textwidth, &g->textheight);
-	g->texture[2] = (int *)mlx_get_data_addr(g->texptr,
-				&g->bytes_per_pixel, &g->size_line, &g->endian);
-	g->texptr = mlx_xpm_file_to_image(g->mlx_ptr, g->w_path,
-				&g->textwidth, &g->textheight);
-	g->texture[3] = (int *)mlx_get_data_addr(g->texptr,
-				&g->bytes_per_pixel, &g->size_line, &g->endian);
-}
-
-int		ft_master(t_game *g)
-{
-	g->movespeed = 0.05;
-	g->rotspeed = 0.05;
-	dealws_key(g);
-	dealad_key(g);
-	dealrl_key(g);
-	ft_raycasting(g);
-	mlx_put_image_to_window(g->mlx_ptr, g->win_ptr, g->dataimg, 0, 0);
+   	deal_key(g); 
+	ft_raycasting(g, 0);
+	mlx_put_image_to_window(g->mlx_ptr, g->win_ptr, g->ren.dataimg , 0, 0);
 	return (1);
 }
 
-void	init_data(t_game *g)
+void	init_data(s_game *g)
 {
-	g->posx = 5;
-	g->posy = 5;
-	//g->planey = 0.66;
-	g->w = 0;
-	g->s = 0;
-	g->a = 0;
-	g->d = 0;
+    g->ray.planex = 0;
+    g->key.movespeed = 0.1;
+	g->key.rotspeed = 0.05;
+    g->f_path = NULL;
+    g->f.texturefloor = 0;
+    g->n_spray = 0;
+    g->boolean = 0;
+    g->key.right = 0;
+    g->key.left = 0;
+	g->key.a = 0;
+	g->key.s = 0;
+	g->key.d = 0;
+	g->key.w = 0;
+	g->key.esc = 0;
 }
 
-int		main(int argc, char **argv)
+int     main(int argc, char **argv)
 {
-	t_game	g;
-
-	if (argc != 2)
-		return (0);
-	init_data(&g);
-	ft_read_map(argv[1], &g);
-	g.mlx_ptr = mlx_init();
-	g.win_ptr = mlx_new_window(g.mlx_ptr, g.mapwidth, g.mapheight, "cub3d");
-	g.dataimg = mlx_new_image(g.mlx_ptr, g.mapwidth, g.mapheight);
-	g.buff = (int *)mlx_get_data_addr(g.dataimg,
-			&g.bytes_per_pixel, &g.size_line, &g.endian);
-	get_textures(&g);
-	mlx_hook(g.win_ptr, 2, 1, key_pressed, &g);
-	mlx_hook(g.win_ptr, 3, 1, key_released, &g);
-	mlx_loop_hook(g.mlx_ptr, ft_master, &g);
-	mlx_hook(g.win_ptr, 17, 0, ft_exit, &g);
-	mlx_loop(g.mlx_ptr);
-	return (0);
+    s_game g;
+    
+    init_data(&g);
+    if (argc == 2)
+    {
+        ft_read_map(argv[1], &g);
+        //printf("%d \n %d", g.mapwidth, g.mapheight);
+        g.mlx_ptr = mlx_init();
+        g.win_ptr = mlx_new_window(g.mlx_ptr, g.mapwidth, g.mapheight, "cub3d");
+        g.ren.dataimg = mlx_new_image(g.mlx_ptr, g.mapwidth, g.mapheight);
+        get_textures(&g);
+        g.buff = (int *)mlx_get_data_addr(g.ren.dataimg, &g.ren.bytes_per_pixel, &g.ren.size_line, &g.ren.endian);
+        mlx_hook(g.win_ptr, 2, 1, key_pressed, &g.key);
+        mlx_hook(g.win_ptr, 3, 1, key_released, &g.key);
+        mlx_hook(g.win_ptr, 17, 1, close_game, (void *)&g);
+        mlx_loop_hook (g.mlx_ptr, ft_master, &g);
+        mlx_loop(g.mlx_ptr);
+    }
+    else if (argc == 3)
+    {
+        ft_read_map(argv[1], &g);
+        //printf("%d \n %d", g.mapwidth, g.mapheight);
+        g.mlx_ptr = mlx_init();
+        g.win_ptr = mlx_new_window(g.mlx_ptr, g.mapwidth, g.mapheight, "cub3d");
+        g.ren.dataimg = mlx_new_image(g.mlx_ptr, g.mapwidth, g.mapheight);
+        get_textures(&g);
+        g.buff = (int *)mlx_get_data_addr(g.ren.dataimg, &g.ren.bytes_per_pixel, &g.ren.size_line, &g.ren.endian);
+        //ft_master(&g);
+        check_screenshot(&g, argv[2]);
+        return (0);
+    }
+    else
+        ft_error("ERROR, NUMBER OF ARGUMENTS INVALID\n", &g);
+    return (0);
 }

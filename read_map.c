@@ -3,131 +3,250 @@
 /*                                                        :::      ::::::::   */
 /*   read_map.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egarcia- <emilioggo@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/24 17:35:04 by aortega-          #+#    #+#             */
-/*   Updated: 2020/02/27 16:07:32 by aortega-         ###   ########.fr       */
+/*   Created: 2020/03/02 18:22:08 by egarcia-          #+#    #+#             */
+/*   Updated: 2020/03/02 21:27:48 by egarcia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
 #include "cub3d.h"
 
-void	ft_set_start(int x, int y, char *map, t_game *g)
+void        ft_set_start(int x, int y, char *map, s_game *g)
 {
-	g->posx = x;
-	g->posy = y;
-	if (*map == 'N')
-	{
-		g->dirx = -1;
-		g->planey = 0.66;
-	}
-	else if (*map == 'S')
-	{
-		g->dirx = 1;
-		g->planey = -0.66;
-	}
-	else if (*map == 'E')
-	{
-		g->diry = 1;
-		g->planex = 0.66;
-	}
-	else if (*map == 'W')
-	{
-		g->diry = -1;
-		g->planex = -0.66;
-	}
+    g->ray.posx = x + 0.5;
+    g->ray.posy = y + 0.5;
+    if (*map == 'N')
+    {
+        g->ray.dirx = -1;
+        g->ray.planey  = 0.66;
+    }
+    else if (*map == 'S')
+    { 
+        g->ray.dirx = 1;
+        g->ray.planey  = -0.66;
+    }
+    else if (*map == 'E')
+    { 
+        g->ray.dirx = 0;
+        g->ray.planey  = 0.66;
+    }
+    else if (*map == 'W')
+    { 
+        g->ray.dirx = 0;
+        g->ray.planey  = -0.66;
+    }
+    else
+        ft_error("ERROR\n INIT ZONE DOES NOT MATCH", g);
 }
 
-void	ft_mapaux(t_game *g, int size, t_readmap *struc, int j)
+int         ft_ncol(char *map)
 {
-	int i;
+    int col;
 
-	i = 0;
-	while (i < struc->row)
-	{
-		g->worldmap[i] = (int *)malloc(sizeof(int) * size);
-		j = 0;
-		while (j < size)
-		{
-			if (ft_isdigit(*struc->map))
-				g->worldmap[i][j] = *struc->map - '0';
-			else
-			{
-				ft_set_start(i, j, struc->map, g);
-				g->worldmap[i][j] = 0;
-			}
-			struc->map += 2;
-			j++;
-		}
-		g->worldmap[i][j] = 0;
-		i++;
-	}
+    col = 0;
+    while (*map != '\n')
+    {
+        if (ft_isdigit(*map))
+            col++;
+        map++;
+    }
+    return (col);
+}
+void        ft_map(char *map, s_game *g, int row)
+{
+    int x;
+    int col;
+    int y;
+
+    g->worldmap = (int **)malloc(sizeof(int *) * row);
+    col = ft_ncol(map);
+    x = 0;
+   
+    while (x < row)
+    {
+        if (*map != '1')
+        ft_error("ERROR\n MAP IS NOT CLOSED\n", g);
+        g->worldmap[x] = (int *)malloc(sizeof(int) * col);
+        y = 0;
+        while (y < col)
+        {
+            if ((x == 0 || x == row)  && *map != '1')
+                ft_error("Error\n MAP IS NOT CLOSED\n", g);
+            if (ft_isdigit(*map))
+            {
+                g->worldmap[x][y] = *map - '0';
+                if (*map == '2')
+                    ft_isspray(g, x, y);
+            }
+            else
+            {
+                ft_set_start(x, y, map, g);
+                g->worldmap[x][y] = 0;
+            }
+            map += 2;
+            y++;
+        }
+        x++;
+    }
 }
 
-void	ft_map(char *map, t_game *g, t_readmap *struc)
+void        ft_path_s(char *line, s_game *g)
 {
-	int	i;
-	int	size;
-	int	j;
+    int  i;
 
-	j = 0;
-	size = 0;
-	i = 0;
-	g->worldmap = (int **)malloc(sizeof(int *) * struc->row);
-	while (map[i] != '\n')
-	{
-		if (ft_isdigit(map[i]))
-			size++;
-		i++;
-	}
-	ft_mapaux(g, size, struc, j);
+    i = 0;
+
+    if (line[1] == 'O')
+    {
+        while (line[i] != '.')
+            i++;
+        g->so_path = ft_strdup (&line[i]);
+    }
+    else if (line[1] == ' ')
+    {
+        while (line[i] != '.')
+            i++;
+        g->spray_path = ft_strdup (&line[i]);
+    }
 }
 
-void	ft_read_mapaux(t_readmap *struc, t_game *g)
+void       ft_path_new(char *line, s_game *g)
 {
-	struc->i = 0;
-	if (struc->line[struc->i] == 'R')
-	{
-		struc->i++;
-		g->mapwidth = ft_atoi(&struc->line[2]);
-		while (struc->line[struc->i] == ' ')
-			struc->i++;
-		while (ft_isdigit(struc->line[struc->i]))
-			struc->i++;
-		g->mapheight = ft_atoi(&struc->line[struc->i]);
-	}
-	else if (struc->line[0] == 'S')
-		ft_path_s(struc->line, g);
-	else if (struc->line[0] == 'N' ||
-			struc->line[0] == 'W' || struc->line[0] == 'E')
-		ft_path_new(struc->line, g);
-	else if (struc->line[0] == 'F' || struc->line[0] == 'C')
-		ft_path_color(struc->line, g, struc);
-	else if (ft_isdigit(struc->line[0]))
-	{
-		struc->tmp = ft_strjoin(struc->map, struc->line);
-		free(struc->map);
-		struc->map = ft_strjoin(struc->tmp, "\n");
-		struc->row++;
-	}
+    int i;
+
+    i = 0;
+    if (line[0] == 'N')
+    {
+        while (line[i] != '.')
+            i++;
+        g->n_path = ft_strdup(&line[i]);
+    }
+    else if (line[0] == 'W')
+    {
+        while (line[i] != '.')
+            i++;
+        g->w_path = ft_strdup(&line[i]);
+    }
+    else if (line[0] == 'E')
+    {
+        while (line[i] != '.')
+            i++;
+        g->e_path = ft_strdup(&line[i]);
+    }
+    else if (line[0] == 'F' && line[1] == 'T')
+    {
+        while (line[i] != '.')
+            i++;
+        g->f_path = ft_strdup(&line[i]);
+        g->f.texturefloor = 1;
+    }
 }
 
-void	ft_read_map(char *file, t_game *g)
+void       ft_path_color(char *line, s_game *g)
 {
-	t_readmap	struc;
-	int			fd;
+    int i;
+    int r;
+    int gr;
+    int b;
+    i = 0;
 
-	struc.row = 0;
-	struc.ret = 1;
-	struc.map = ft_strdup("");
-	fd = open(file, O_RDONLY);
-	while (struc.ret > 0)
-	{
-		struc.ret = get_next_line(fd, &struc.line);
-		ft_read_mapaux(&struc, g);
-		free(struc.line);
-		struc.line = NULL;
-	}
-	ft_map(struc.map, g, &struc);
+    if (line[0] == 'F' && line[1] != 'T')
+    {
+        i++;
+         while (line[i] == ' ')
+            i++;
+        r = ft_atoi(&line[i]);
+        while (ft_isdigit(line[i]))
+            i++;
+        i++;
+        gr = ft_atoi(&line[i]);
+        while (ft_isdigit(line[i]))
+            i++;
+        i++;
+        b = ft_atoi(&line[i]);
+        g->f_color = r * 65536 + gr * 256 + b;
+   }
+   else if (line[0] == 'C')
+   {
+        i++;
+         while (line[i] == ' ')
+            i++;
+        r = ft_atoi(&line[i]);
+        while (ft_isdigit(line[i]))
+            i++;
+        i++;
+        gr = ft_atoi(&line[i]);
+        while (ft_isdigit(line[i]))
+            i++;
+        i++;
+        b = ft_atoi(&line[i]); 
+        g->c_color = r * 65536 + gr * 256 + b;
+   }
+}
+void       ft_screensize(s_game *g,char *line)
+{
+    int i;
+
+    i = 1;
+    while (line[i] == ' ')
+        i++;
+    g->mapwidth = ft_atoi(&line[i]);
+    while (ft_isdigit(line[i]))
+        i++;
+    g->mapheight = ft_atoi(&line[i]); 
+}
+
+void        ft_check_error(s_game *g)
+{
+    if (g->mapwidth > 1280 || g->mapwidth < 200)
+        g->mapwidth = 720;
+    if (g->mapheight > 720 || g->mapheight < 200)
+        g->mapheight = 480;
+    if (!(g->f_color))
+        ft_error("Error\nFloor Color not asigned\n", g);
+    if (!(g->c_color)&& g->f.texturefloor == 0)
+        ft_error("Error\nCeiling Color not asigned\n", g);
+}
+void       ft_read_map(char *file, s_game *g)
+{
+    char *line;
+    int     fd;
+    int     ret;
+    int     i;
+    char    *map;
+    char    *tmp;
+    int     row;
+
+    row = 0;
+    ret = 1;
+    map = ft_strdup("");
+    fd = open(file, O_RDONLY);
+    while (ret > 0)
+    {
+        ret = get_next_line(fd, &line);
+        i = 0;
+        if (line[i] == 'R')
+            ft_screensize(g, line);
+        else if (line[0] == 'S')
+            ft_path_s(line, g);
+        else if (line[0] == 'N' || line[0] == 'W' ||
+                    line[0] == 'E' || (line[0] == 'F' && line[1] == 'T'))
+            ft_path_new(line, g);
+        else if (line[0] == 'F' || line [0] == 'C')
+            ft_path_color(line, g);
+        else if (ft_isdigit(line[0]))
+        {
+            tmp = ft_strjoin(map, line);
+            free(map);
+            map = ft_strjoin(tmp, "\n");
+            row++;
+        }
+        free (line);
+        line = NULL;   
+    }
+    ft_map(map, g, row);
+    ft_check_error(g);
+    free (map);
+    g->zbuffer = malloc(sizeof(int *) * g->mapwidth);
 }
