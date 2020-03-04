@@ -6,22 +6,30 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/14 13:03:33 by egarcia-          #+#    #+#             */
-/*   Updated: 2020/03/03 16:17:23 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/03/04 15:49:57 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
 
-int    ft_master(s_game *g)
+int    ft_master(t_game *g)
 {
-   	deal_key(g); 
-	ft_raycasting(g, 0);
+   	deal_key(g);
+	g->selector = 0; 
+	ft_raycasting(g);
+	if (g->selector == 0)
+	{
+		shortsprites(g);
+		spray_raycasting(g);
+		g->selector = 1;
+		ft_raycasting(g);
+	}
 	mlx_put_image_to_window(g->mlx_ptr, g->win_ptr, g->ren.dataimg , 0, 0);
 	return (1);
 }
 
-void	init_data(s_game *g)
+void	init_data(t_game *g)
 {
     g->ray.planex = 0;
     g->key.movespeed = 0.1;
@@ -39,19 +47,31 @@ void	init_data(s_game *g)
 	g->key.esc = 0;
 }
 
+void        ft_check_error(t_game *g)
+{
+    if (g->mapwidth > 1280 || g->mapwidth < 200)
+        g->mapwidth = 720;
+    if (g->mapheight > 720 || g->mapheight < 200)
+        g->mapheight = 480;
+    if (!(g->f_color))
+        ft_error("Error\nFloor Color not asigned\n", g);
+    if (!(g->c_color)&& g->f.texturefloor == 0)
+        ft_error("Error\nCeiling Color not asigned\n", g);
+}
+
 int     main(int argc, char **argv)
 {
-    s_game g;
+    t_game g;
     
     init_data(&g);
     if (argc == 2)
     {
         ft_read_map(argv[1], &g);
-        //printf("%d \n %d", g.mapwidth, g.mapheight);
         g.mlx_ptr = mlx_init();
         g.win_ptr = mlx_new_window(g.mlx_ptr, g.mapwidth, g.mapheight, "cub3d");
         g.ren.dataimg = mlx_new_image(g.mlx_ptr, g.mapwidth, g.mapheight);
         get_textures(&g);
+		get_texturesaux(&g);
         g.buff = (int *)mlx_get_data_addr(g.ren.dataimg, &g.ren.bytes_per_pixel, &g.ren.size_line, &g.ren.endian);
         mlx_hook(g.win_ptr, 2, 1, key_pressed, &g.key);
         mlx_hook(g.win_ptr, 3, 1, key_released, &g.key);
@@ -59,20 +79,7 @@ int     main(int argc, char **argv)
         mlx_loop_hook (g.mlx_ptr, ft_master, &g);
         mlx_loop(g.mlx_ptr);
     }
-    else if (argc == 3)
-    {
-        ft_read_map(argv[1], &g);
-        //printf("%d \n %d", g.mapwidth, g.mapheight);
-        g.mlx_ptr = mlx_init();
-        g.win_ptr = mlx_new_window(g.mlx_ptr, g.mapwidth, g.mapheight, "cub3d");
-        g.ren.dataimg = mlx_new_image(g.mlx_ptr, g.mapwidth, g.mapheight);
-        get_textures(&g);
-        g.buff = (int *)mlx_get_data_addr(g.ren.dataimg, &g.ren.bytes_per_pixel, &g.ren.size_line, &g.ren.endian);
-        //ft_master(&g);
-        check_screenshot(&g, argv[2]);
-        return (0);
-    }
     else
-        ft_error("ERROR, NUMBER OF ARGUMENTS INVALID\n", &g);
+        ft_error("error invalid arguments\n", &g);
     return (0);
 }

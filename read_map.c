@@ -3,42 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   read_map.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egarcia- <emilioggo@gmail.com>             +#+  +:+       +#+        */
+/*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/02 18:22:08 by egarcia-          #+#    #+#             */
-/*   Updated: 2020/03/02 21:27:48 by egarcia-         ###   ########.fr       */
+/*   Updated: 2020/03/04 19:28:57 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include "cub3d.h"
-
-void        ft_set_start(int x, int y, char *map, s_game *g)
-{
-    g->ray.posx = x + 0.5;
-    g->ray.posy = y + 0.5;
-    if (*map == 'N')
-    {
-        g->ray.dirx = -1;
-        g->ray.planey  = 0.66;
-    }
-    else if (*map == 'S')
-    { 
-        g->ray.dirx = 1;
-        g->ray.planey  = -0.66;
-    }
-    else if (*map == 'E')
-    { 
-        g->ray.dirx = 0;
-        g->ray.planey  = 0.66;
-    }
-    else if (*map == 'W')
-    { 
-        g->ray.dirx = 0;
-        g->ray.planey  = -0.66;
-    }
-    else
-        ft_error("ERROR\n INIT ZONE DOES NOT MATCH", g);
-}
 
 int         ft_ncol(char *map)
 {
@@ -47,144 +20,184 @@ int         ft_ncol(char *map)
     col = 0;
     while (*map != '\n')
     {
-        if (ft_isdigit(*map))
-            col++;
+        col++;
         map++;
     }
     return (col);
 }
-void        ft_map(char *map, s_game *g, int row)
+
+void	ft_midisclose(t_game *g , int x)
+{
+	int start;
+	int end;
+
+	start = 0;
+	end = g->col;
+	while (start < g->col && g->worldmap[x][start] != 0)
+	{
+		if (g->worldmap[x][start] == 1)
+			break;
+		start++;
+	}
+	while (end > 0 && g->worldmap[x][end] != 0)
+	{
+		if (g->worldmap[x][end] == 1)
+			break;
+		end--;
+	}
+	if (end == start || start == g->col)
+		ft_error("error mid is not close" , g);
+}
+int		ft_checknumber(t_game *g , int x)
+{
+	int y;
+	int border;
+
+	border = 0;
+	y = 0;
+	while(y < g->col - 1)
+	{
+		if (g->worldmap[x][y] == 1 || g->worldmap[x][y] == 3)
+		{
+			y++;
+			if (g->worldmap[x][y] == 1)
+				border = 1;
+		}
+		else
+			break;
+	}
+	if (y == g->col - 1 && border == 1)
+		return (1);
+	return (0);
+
+}
+
+void		ft_checktop(t_game *g, int x)
+{
+	int y;
+	int z;
+
+	y = 0;
+	while (y < g->col)
+	{
+		if (g->worldmap[x][y] == 3)
+		{
+			
+			z = x;
+			while (g->worldmap[z][y] == 3 && z < g->row - 1)
+				z++;
+			if (g->worldmap[z][y] == 0 || g->worldmap[z][y] == 2)
+				ft_error("Error map not closed", g);
+		}
+		y++;
+	}
+}
+
+void		ft_checkbot(t_game *g, int x)
+{
+	int y;
+	int z;
+
+	y = 0;
+	
+	while (y < g->col - 1)
+	{
+		printf("%d ", g->worldmap[z][y]);
+		if (g->worldmap[x][y] == 3)
+		{
+			
+			z = x;
+			while (g->worldmap[z][y] == 3 && z > 0)
+				z--;
+			if (g->worldmap[z][y] == 0 || g->worldmap[z][y] == 2)
+				ft_error("Error map not closed", g);
+		}
+		y++;
+	}
+}
+void		ft_checkerror(t_game *g)
+{
+	int x;
+	int y;
+	int first;
+	int last;
+
+	first = 0;
+	last = 0;
+	x = 0;
+	y = 0;
+	while (x < g->row - 1)
+	{
+		
+			//printf("entro aqui");
+		if (first == 0  && ft_checknumber(g , x))
+		{	
+			ft_checktop(g , x);
+			first = 1;
+		}
+		else if (first == 1)
+			ft_midisclose(g, x);
+		
+		//printf("%d", x);
+		if (first == 1 && ft_checknumber(g , x))
+		{
+			ft_checkbot(g, x);
+			last = 1;
+		}
+		x++;
+	}
+	//printf("\n%d", first);
+	if (first == 0 || last == 0)
+	  ft_error("Las puertas estna abiertas!!!!",g);
+}
+
+void        ft_map(char *map, t_game *g, int row)
 {
     int x;
     int col;
     int y;
 
     g->worldmap = (int **)malloc(sizeof(int *) * row);
-    col = ft_ncol(map);
+    g->col = ft_ncol(map);
+	col = g->col;
+	g->row = row;
     x = 0;
-   
+	printf("N COL:%d\n", col);
     while (x < row)
     {
-        if (*map != '1')
-        ft_error("ERROR\n MAP IS NOT CLOSED\n", g);
+        //if (*map != '1')
+        //ft_error("ERROR\n MAP IS NOT CLOSED\n", g);
         g->worldmap[x] = (int *)malloc(sizeof(int) * col);
         y = 0;
         while (y < col)
         {
-            if ((x == 0 || x == row)  && *map != '1')
-                ft_error("Error\n MAP IS NOT CLOSED\n", g);
+            
             if (ft_isdigit(*map))
             {
                 g->worldmap[x][y] = *map - '0';
                 if (*map == '2')
                     ft_isspray(g, x, y);
             }
-            else
+			else if (*map == ' ')
+				g->worldmap[x][y] = 3;
+            else if (*map == 'W' || *map == 'N' || *map == 'S' || *map == 'E')
             {
                 ft_set_start(x, y, map, g);
                 g->worldmap[x][y] = 0;
             }
-            map += 2;
+			printf("%d ", g->worldmap[x][y]);
+            map++;
             y++;
         }
+		if (*map == '\n')
+			map++;
+		printf("\n");
         x++;
     }
+	ft_checkerror(g);
 }
 
-void        ft_path_s(char *line, s_game *g)
-{
-    int  i;
-
-    i = 0;
-
-    if (line[1] == 'O')
-    {
-        while (line[i] != '.')
-            i++;
-        g->so_path = ft_strdup (&line[i]);
-    }
-    else if (line[1] == ' ')
-    {
-        while (line[i] != '.')
-            i++;
-        g->spray_path = ft_strdup (&line[i]);
-    }
-}
-
-void       ft_path_new(char *line, s_game *g)
-{
-    int i;
-
-    i = 0;
-    if (line[0] == 'N')
-    {
-        while (line[i] != '.')
-            i++;
-        g->n_path = ft_strdup(&line[i]);
-    }
-    else if (line[0] == 'W')
-    {
-        while (line[i] != '.')
-            i++;
-        g->w_path = ft_strdup(&line[i]);
-    }
-    else if (line[0] == 'E')
-    {
-        while (line[i] != '.')
-            i++;
-        g->e_path = ft_strdup(&line[i]);
-    }
-    else if (line[0] == 'F' && line[1] == 'T')
-    {
-        while (line[i] != '.')
-            i++;
-        g->f_path = ft_strdup(&line[i]);
-        g->f.texturefloor = 1;
-    }
-}
-
-void       ft_path_color(char *line, s_game *g)
-{
-    int i;
-    int r;
-    int gr;
-    int b;
-    i = 0;
-
-    if (line[0] == 'F' && line[1] != 'T')
-    {
-        i++;
-         while (line[i] == ' ')
-            i++;
-        r = ft_atoi(&line[i]);
-        while (ft_isdigit(line[i]))
-            i++;
-        i++;
-        gr = ft_atoi(&line[i]);
-        while (ft_isdigit(line[i]))
-            i++;
-        i++;
-        b = ft_atoi(&line[i]);
-        g->f_color = r * 65536 + gr * 256 + b;
-   }
-   else if (line[0] == 'C')
-   {
-        i++;
-         while (line[i] == ' ')
-            i++;
-        r = ft_atoi(&line[i]);
-        while (ft_isdigit(line[i]))
-            i++;
-        i++;
-        gr = ft_atoi(&line[i]);
-        while (ft_isdigit(line[i]))
-            i++;
-        i++;
-        b = ft_atoi(&line[i]); 
-        g->c_color = r * 65536 + gr * 256 + b;
-   }
-}
-void       ft_screensize(s_game *g,char *line)
+void       ft_screensize(t_game *g,char *line)
 {
     int i;
 
@@ -197,18 +210,7 @@ void       ft_screensize(s_game *g,char *line)
     g->mapheight = ft_atoi(&line[i]); 
 }
 
-void        ft_check_error(s_game *g)
-{
-    if (g->mapwidth > 1280 || g->mapwidth < 200)
-        g->mapwidth = 720;
-    if (g->mapheight > 720 || g->mapheight < 200)
-        g->mapheight = 480;
-    if (!(g->f_color))
-        ft_error("Error\nFloor Color not asigned\n", g);
-    if (!(g->c_color)&& g->f.texturefloor == 0)
-        ft_error("Error\nCeiling Color not asigned\n", g);
-}
-void       ft_read_map(char *file, s_game *g)
+void       ft_read_map(char *file, t_game *g)
 {
     char *line;
     int     fd;
@@ -235,12 +237,13 @@ void       ft_read_map(char *file, s_game *g)
             ft_path_new(line, g);
         else if (line[0] == 'F' || line [0] == 'C')
             ft_path_color(line, g);
-        else if (ft_isdigit(line[0]))
+        else if (ft_isdigit(line[0]) || line[0] == ' ')
         {
             tmp = ft_strjoin(map, line);
             free(map);
             map = ft_strjoin(tmp, "\n");
             row++;
+			free(tmp);
         }
         free (line);
         line = NULL;   

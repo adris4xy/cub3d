@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   key_manager.c                                      :+:      :+:    :+:   */
+/*   keys.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egarcia- <egarcia-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/14 13:33:28 by egarcia-          #+#    #+#             */
-/*   Updated: 2020/02/28 19:34:40 by egarcia-         ###   ########.fr       */
+/*   Updated: 2020/03/04 14:11:27 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-int    key_pressed(int key, s_keys *k)
+int    key_pressed(int key, t_keys *k)
 {
 	if (key == 0)
 		k->a = 1;
@@ -26,14 +26,10 @@ int    key_pressed(int key, s_keys *k)
 		k->left = 1;
 	else if (key == 124)
 		k->right = 1;
-	else if (key == 257)
-		k->run = 1;
-	else if (key == 53)
-		k->esc = 1;
 	return (0);
 }
 
-int    key_released(int key, s_keys *k)
+int    key_released(int key, t_keys *k, t_game *g)
 {
 	if (key == 0)
 		k->a = 0;
@@ -50,11 +46,11 @@ int    key_released(int key, s_keys *k)
 	else if (key == 257)
 		k->run = 0;
 	else if (key == 53)
-		k->esc = 0;
+		return(close_game(g));
 	return (0);
 }
 
-void	key_movement(s_game *g)
+void	key_movement(t_game *g)
 {
 	if (g->key.w)
 	{
@@ -86,7 +82,7 @@ void	key_movement(s_game *g)
 	}	
 }
 
-void	key_rotation(s_game *g)
+void	key_rotation(t_game *g)
 {
 	if (g->key.right)
 	{
@@ -108,20 +104,9 @@ void	key_rotation(s_game *g)
 	}
 }
 
-void 	key_bonus(s_game *g)
-{
-	if (g->key.run)
-		g->key.movespeed = 0.1;
-	else if (!(g->key.run))
-		g->key.movespeed = 0.06;
-	if (g->key.esc)
-		exit(-1);
-
-}
-int     deal_key(s_game *g)
+int     deal_key(t_game *g)
 {
 	key_movement(g);
 	key_rotation(g);
-	key_bonus(g);
 	return (0);
 }
