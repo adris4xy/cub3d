@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/14 13:03:55 by egarcia-          #+#    #+#             */
-/*   Updated: 2020/03/04 18:37:35 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/03/05 17:02:23 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct		s_keys
 	int 			run;
 	int 			esc;
 	double  		movespeed;
-	double			rotspeed;
+	double			rtspd;
 }   				t_keys;
 
 typedef struct		s_ray
@@ -38,8 +38,8 @@ typedef struct		s_ray
 	double			posy;
 	double			dirx;
 	double			diry;
-	double			planex;
-	double			planey;
+	double			plx;
+	double			ply;
 	double			camerax;
 	double			raydirx;
 	double			raydiry;
@@ -168,6 +168,7 @@ typedef struct		s_game
 int		ft_master(t_game *g);
 void	init_data(t_game *g);
 void	ft_check_error(t_game *g);
+void	ft_mlxgame(char *argv, t_game *g);
 //keys.c
 int    	key_pressed(int key, t_keys *k);
 int		key_released(int key, t_keys *k, t_game *g);
@@ -186,9 +187,9 @@ void	spray_raycasting(t_game *g);
 void	ft_isspray(t_game *g, int x, int y);
 //readmap.c
 int		ft_ncol(char *map);
+int		ft_closemap(t_game *g, unsigned int x, unsigned int y);
 void	ft_map(char *map, t_game *g, int row);
 void	ft_screensize(t_game *g,char *line);
-void	ft_check_error(t_game *g);
 void	ft_read_map(char *file, t_game *g);
 //pathsmap.c
 void	ft_set_start(int x, int y, char *map, t_game *g);

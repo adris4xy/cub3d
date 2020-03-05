@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/02 18:22:08 by egarcia-          #+#    #+#             */
-/*   Updated: 2020/03/04 19:28:57 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/03/05 17:09:06 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,150 +26,60 @@ int         ft_ncol(char *map)
     return (col);
 }
 
-void	ft_midisclose(t_game *g , int x)
+int         ft_closemap(t_game *g, unsigned int x, unsigned int y)
 {
-	int start;
-	int end;
-
-	start = 0;
-	end = g->col;
-	while (start < g->col && g->worldmap[x][start] != 0)
-	{
-		if (g->worldmap[x][start] == 1)
-			break;
-		start++;
-	}
-	while (end > 0 && g->worldmap[x][end] != 0)
-	{
-		if (g->worldmap[x][end] == 1)
-			break;
-		end--;
-	}
-	if (end == start || start == g->col)
-		ft_error("error mid is not close" , g);
-}
-int		ft_checknumber(t_game *g , int x)
-{
-	int y;
-	int border;
-
-	border = 0;
-	y = 0;
-	while(y < g->col - 1)
-	{
-		if (g->worldmap[x][y] == 1 || g->worldmap[x][y] == 3)
-		{
-			y++;
-			if (g->worldmap[x][y] == 1)
-				border = 1;
-		}
-		else
-			break;
-	}
-	if (y == g->col - 1 && border == 1)
-		return (1);
-	return (0);
-
-}
-
-void		ft_checktop(t_game *g, int x)
-{
-	int y;
-	int z;
-
-	y = 0;
-	while (y < g->col)
-	{
-		if (g->worldmap[x][y] == 3)
-		{
-			
-			z = x;
-			while (g->worldmap[z][y] == 3 && z < g->row - 1)
-				z++;
-			if (g->worldmap[z][y] == 0 || g->worldmap[z][y] == 2)
-				ft_error("Error map not closed", g);
-		}
-		y++;
-	}
-}
-
-void		ft_checkbot(t_game *g, int x)
-{
-	int y;
-	int z;
-
-	y = 0;
-	
-	while (y < g->col - 1)
-	{
-		printf("%d ", g->worldmap[z][y]);
-		if (g->worldmap[x][y] == 3)
-		{
-			
-			z = x;
-			while (g->worldmap[z][y] == 3 && z > 0)
-				z--;
-			if (g->worldmap[z][y] == 0 || g->worldmap[z][y] == 2)
-				ft_error("Error map not closed", g);
-		}
-		y++;
-	}
-}
-void		ft_checkerror(t_game *g)
-{
-	int x;
-	int y;
-	int first;
-	int last;
-
-	first = 0;
-	last = 0;
-	x = 0;
-	y = 0;
-	while (x < g->row - 1)
-	{
-		
-			//printf("entro aqui");
-		if (first == 0  && ft_checknumber(g , x))
-		{	
-			ft_checktop(g , x);
-			first = 1;
-		}
-		else if (first == 1)
-			ft_midisclose(g, x);
-		
-		//printf("%d", x);
-		if (first == 1 && ft_checknumber(g , x))
-		{
-			ft_checkbot(g, x);
-			last = 1;
-		}
-		x++;
-	}
-	//printf("\n%d", first);
-	if (first == 0 || last == 0)
-	  ft_error("Las puertas estna abiertas!!!!",g);
+	unsigned int j;
+	unsigned int k;
+    j = x - 1;
+    
+    if (g->worldmap[x][y] == 0)
+    {
+		if (x == 0 || y == 0 || x == (unsigned int)g->row || y == (unsigned int)g->col)
+			ft_error("map invalid border", g);
+        while (j < x + 1)
+        {
+            k = y - 1;
+            while (k < y + 1)
+            {
+                if (g->worldmap[j][k] != 0 && g->worldmap[j][k] != 1 && g->worldmap[j][k] != 2)
+                    ft_error("map invalid check", g);
+                k++;
+            }
+            j++;
+        }
+           
+    }
+    else if (g->worldmap[x][y] == 3)
+    {
+        while (j < x + 1)
+        {
+            k = y - 1;
+            while (k < y + 1)
+            {
+                if (g->worldmap[j][k] == 0)
+                    ft_error("map invalid", g);
+                k++;
+            }
+            j++;
+        }
+    }
+    return (0);
 }
 
 void        ft_map(char *map, t_game *g, int row)
 {
     int x;
-    int col;
     int y;
 
     g->worldmap = (int **)malloc(sizeof(int *) * row);
     g->col = ft_ncol(map);
-	col = g->col;
 	g->row = row;
     x = 0;
-	printf("N COL:%d\n", col);
     while (x < row)
     {
-        //if (*map != '1')
-        //ft_error("ERROR\n MAP IS NOT CLOSED\n", g);
-        g->worldmap[x] = (int *)malloc(sizeof(int) * col);
+        g->worldmap[x] = (int *)malloc(sizeof(int) * g->col);
         y = 0;
-        while (y < col)
+        while (y < g->col)
         {
             
             if (ft_isdigit(*map))
@@ -188,13 +98,12 @@ void        ft_map(char *map, t_game *g, int row)
 			printf("%d ", g->worldmap[x][y]);
             map++;
             y++;
-        }
-		if (*map == '\n')
+			if (*map == '\n')
 			map++;
+        }
 		printf("\n");
         x++;
     }
-	ft_checkerror(g);
 }
 
 void       ft_screensize(t_game *g,char *line)

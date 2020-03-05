@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 12:15:05 by aortega-          #+#    #+#             */
-/*   Updated: 2020/03/04 16:21:45 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/03/05 16:14:52 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,22 @@ void	ft_set_start(int x, int y, char *map, t_game *g)
 	if (*map == 'N')
 	{
 		g->ray.dirx = -1;
-		g->ray.planey = 0.66;
+		g->ray.ply = 0.66;
 	}
 	else if (*map == 'S')
 	{
 		g->ray.dirx = 1;
-		g->ray.planey = -0.66;
+		g->ray.ply = -0.66;
 	}
 	else if (*map == 'E')
 	{
 		g->ray.dirx = 0;
-		g->ray.planey = 0.66;
+		g->ray.ply = 0.66;
 	}
 	else if (*map == 'W')
 	{
 		g->ray.dirx = 0;
-		g->ray.planey = -0.66;
+		g->ray.ply = -0.66;
 	}
 	else
 		ft_error("ERROR\n INIT ZONE DOES NOT MATCH", g);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   spritecasting.c                                    :+:      :+:    :+:   */
+/*   spritecastingaux.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/03 18:30:14 by aortega-          #+#    #+#             */
-/*   Updated: 2020/03/04 13:00:11 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/03/05 16:13:21 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,10 @@ void       spray_raycasting(t_game *g)
     {
         g->spray[i].sprayx = g->spray[i].posx - g->ray.posx;
         g->spray[i].sprayy = g->spray[i].posy - g->ray.posy;
-        g->spray[i].invdet = 1.0 / (g->ray.planex * g->ray.diry - g->ray.dirx * g->ray.planey);
+        g->spray[i].invdet = 1.0 / (g->ray.plx * g->ray.diry - g->ray.dirx * g->ray.ply);
         
         g->spray[i].transformx = g->spray[i].invdet * (g->ray.diry *  g->spray[i].sprayx - g->ray.dirx * g->spray[i].sprayy);
-        g->spray[i].transformy = g->spray[i].invdet * (-g->ray.planey *  g->spray[i].sprayx + g->ray.planex * g->spray[i].sprayy);
+        g->spray[i].transformy = g->spray[i].invdet * (-g->ray.ply *  g->spray[i].sprayx + g->ray.plx * g->spray[i].sprayy);
         g->spray[i].spritescreenx = ((int)(g->mapwidth / 2)) * (1 +  g->spray[i].transformx / g->spray[i].transformy);
         g->spray[i].spriteheight = abs((int)(g->mapheight / g->spray[i].transformy));
         g->spray[i].drawstarty = -g->spray[i].spriteheight / 2 + g->mapheight / 2;

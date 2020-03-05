@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   raycasting.c                                       :+:      :+:    :+:   */
+/*   raycastingaux.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/14 16:44:03 by egarcia-          #+#    #+#             */
-/*   Updated: 2020/03/04 15:52:42 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/03/05 16:12:51 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 void	ft_raygroupaux0(t_game *g, int x)
 {
 	g->ray.camerax = 2 * x / (double)g->mapwidth - 1;
-	g->ray.raydirx = g->ray.dirx + g->ray.planex * g->ray.camerax;
-	g->ray.raydiry = g->ray.diry + g->ray.planey * g->ray.camerax;
+	g->ray.raydirx = g->ray.dirx + g->ray.plx * g->ray.camerax;
+	g->ray.raydiry = g->ray.diry + g->ray.ply * g->ray.camerax;
 	g->ray.mapx = (int)g->ray.posx;
 	g->ray.mapy = (int)g->ray.posy;
 	ft_rayaux1(g);
