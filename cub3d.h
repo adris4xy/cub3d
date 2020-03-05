@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/14 13:03:55 by egarcia-          #+#    #+#             */
-/*   Updated: 2020/03/05 17:02:23 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/03/05 18:39:48 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ typedef struct		s_game
 {
 	void        	*mlx_ptr;
 	void        	*win_ptr;
-	int	        	*buff; 
+	int	        	*buff;
 	t_keys			key;
 	t_render    	ren;
 	t_ray       	ray;
@@ -162,47 +162,53 @@ typedef struct		s_game
 	int 			b;
 	int				col;
 	int				row;
+	int				color;
+	int				stripe;
 }             		t_game;
 
-//cub3d.c
+//cub3d.c norma ok
 int		ft_master(t_game *g);
 void	init_data(t_game *g);
 void	ft_check_error(t_game *g);
 void	ft_mlxgame(char *argv, t_game *g);
-//keys.c
+//keys.c norma ok
 int    	key_pressed(int key, t_keys *k);
 int		key_released(int key, t_keys *k, t_game *g);
-void	key_movement(t_game *g);
+void	key_movementws(t_game *g);
+void	key_movementad(t_game *g);
 void	key_rotation(t_game *g);
-int     deal_key(t_game *g);
-//raycasting.c norme ok
+//raycasting.c norma ok
 void	ft_rayaux1(t_game *g);
 void	ft_rayaux2(t_game *g);
 void	ft_rayaux3(t_game *g, int textpath);
 void	ft_rayaux4(t_game *g, int x, int y, int textpath);
 void	ft_raygroupaux0(t_game *g, int x);
-//spritecasting.c
+//spritecasting.c norma ok
+void	shortspriteaux(t_game *g, int i);
 void	shortsprites(t_game *g);
+void	spray_rayaux(t_game *g, int i);
+void	spray_rayaux1(t_game *g, int i);
 void	spray_raycasting(t_game *g);
-void	ft_isspray(t_game *g, int x, int y);
 //readmap.c
 int		ft_ncol(char *map);
 int		ft_closemap(t_game *g, unsigned int x, unsigned int y);
 void	ft_map(char *map, t_game *g, int row);
 void	ft_screensize(t_game *g,char *line);
 void	ft_read_map(char *file, t_game *g);
-//pathsmap.c
+//pathsmap.c norma ok
 void	ft_set_start(int x, int y, char *map, t_game *g);
 void	ft_path_s(char *line, t_game *g);
 void	ft_path_new(char *line, t_game *g);
 void	ft_path_color(char *line, t_game *g);
 void	ft_path_coloraux(char *line, int i, t_game *g);
-//utils.c
+//utils.c norma ok
 void	ft_error(char *s, t_game *g);
 int		close_game(t_game *g);
 void	get_textures(t_game *g);
 void	get_texturesaux(t_game *g);
 int		set_side(t_game *g);
-//generalcasting.c
+//general.c norma ok
 void	ft_raycasting(t_game *g);
+int		deal_key(t_game *g);
+void	ft_isspray(t_game *g, int x, int y);
 #endif

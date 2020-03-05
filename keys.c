@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/14 13:33:28 by egarcia-          #+#    #+#             */
-/*   Updated: 2020/03/05 16:19:56 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/03/05 17:29:39 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,74 +50,83 @@ int		key_released(int key, t_keys *k, t_game *g)
 	return (0);
 }
 
-void	key_movement(t_game *g)
+void	key_movementws(t_game *g)
 {
-	if (g->key.w)
+	t_ray	*p;
+	t_keys	*k;
+
+	k = &g->key;
+	p = &g->ray;
+	if (k->w)
 	{
-		if (g->worldmap[(int)(g->ray.posx + g->ray.dirx *
-			g->key.movespeed)][(int)g->ray.posy] == 0)
-			g->ray.posx += g->ray.dirx * g->key.movespeed;
-		if (g->worldmap[(int)g->ray.posx][(int)(g->ray.posy +
-			g->ray.diry * g->key.movespeed)] == 0)
-			g->ray.posy += g->ray.diry * g->key.movespeed;
+		if (g->worldmap[(int)(p->posx + p->dirx *
+			k->movespeed)][(int)p->posy] == 0)
+			p->posx += p->dirx * k->movespeed;
+		if (g->worldmap[(int)p->posx][(int)(p->posy +
+			p->diry * k->movespeed)] == 0)
+			p->posy += p->diry * k->movespeed;
 	}
-	if (g->key.s)
+	if (k->s)
 	{
-		if (g->worldmap[(int)(g->ray.posx - g->ray.dirx *
-			g->key.movespeed)][(int)g->ray.posy] == 0)
-			g->ray.posx -= g->ray.dirx * g->key.movespeed;
-		if (g->worldmap[(int)g->ray.posx][(int)(g->ray.posy -
-			g->ray.diry * g->key.movespeed)] == 0)
-			g->ray.posy -= g->ray.diry * g->key.movespeed;
+		if (g->worldmap[(int)(p->posx - p->dirx *
+			k->movespeed)][(int)p->posy] == 0)
+			p->posx -= p->dirx * k->movespeed;
+		if (g->worldmap[(int)p->posx][(int)(p->posy -
+			p->diry * k->movespeed)] == 0)
+			p->posy -= p->diry * k->movespeed;
 	}
-	if (g->key.a)
+}
+
+void	key_movementad(t_game *g)
+{
+	t_ray	*p;
+	t_keys	*k;
+
+	k = &g->key;
+	p = &g->ray;
+	if (k->a)
 	{
-		if (g->worldmap[(int)(g->ray.posx - g->ray.diry *
-			g->key.movespeed)][(int)g->ray.posy] == 0)
-			g->ray.posx -= g->ray.diry * g->key.movespeed;
-		if (g->worldmap[(int)g->ray.posx][(int)(g->ray.posy +
-			g->ray.dirx * g->key.movespeed)] == 0)
-			g->ray.posy += g->ray.dirx * g->key.movespeed;
+		if (g->worldmap[(int)(p->posx - p->diry *
+			k->movespeed)][(int)p->posy] == 0)
+			p->posx -= p->diry * k->movespeed;
+		if (g->worldmap[(int)p->posx][(int)(p->posy +
+			p->dirx * k->movespeed)] == 0)
+			p->posy += p->dirx * k->movespeed;
 	}
-	if (g->key.d)
+	if (k->d)
 	{
-		if (g->worldmap[(int)(g->ray.posx + g->ray.diry *
-			g->key.movespeed)][(int)g->ray.posy] == 0)
-			g->ray.posx += g->ray.diry * g->key.movespeed;
-		if (g->worldmap[(int)g->ray.posx][(int)(g->ray.posy -
-			g->ray.dirx * g->key.movespeed)] == 0)
-			g->ray.posy -= g->ray.dirx * g->key.movespeed;
+		if (g->worldmap[(int)(p->posx + p->diry *
+			k->movespeed)][(int)p->posy] == 0)
+			p->posx += p->diry * k->movespeed;
+		if (g->worldmap[(int)p->posx][(int)(p->posy -
+			p->dirx * k->movespeed)] == 0)
+			p->posy -= p->dirx * k->movespeed;
 	}
 }
 
 void	key_rotation(t_game *g)
 {
 	t_ray	*p;
+	t_keys	*k;
 
+	k = &g->key;
 	p = &g->ray;
-	if (g->key.right)
+	if (k->right)
 	{
-		g->ray.old_dir = g->ray.dirx;
-		g->ray.dirx = g->ray.dirx * cos(-g->key.rtspd) - g->ray.diry * sin(-g->key.rtspd);
-		g->ray.diry = g->ray.old_dir * sin(-g->key.rtspd) + g->ray.diry * cos(-g->key.rtspd);
-		g->ray.old_plane = g->ray.plx;
-		g->ray.plx = g->ray.plx * cos(-g->key.rtspd) - g->ray.ply * sin(-g->key.rtspd);
-		g->ray.ply = g->ray.old_plane * sin(-g->key.rtspd) + g->ray.ply * cos(-g->key.rtspd);
+		p->old_dir = p->dirx;
+		p->dirx = p->dirx * cos(-k->rtspd) - p->diry * sin(-k->rtspd);
+		p->diry = p->old_dir * sin(-k->rtspd) + p->diry * cos(-k->rtspd);
+		p->old_plane = p->plx;
+		p->plx = p->plx * cos(-k->rtspd) - p->ply * sin(-k->rtspd);
+		p->ply = p->old_plane * sin(-k->rtspd) + p->ply * cos(-k->rtspd);
 	}
-	if (g->key.left)
+	if (k->left)
 	{
-		g->ray.old_dir = g->ray.dirx;
-		g->ray.dirx = g->ray.dirx * cos(g->key.rtspd) - g->ray.diry * sin(g->key.rtspd);
-		g->ray.diry = g->ray.old_dir * sin(g->key.rtspd) + g->ray.diry * cos(g->key.rtspd);
-		g->ray.old_plane = g->ray.plx;
-		g->ray.plx = g->ray.plx * cos(g->key.rtspd) - g->ray.ply * sin(g->key.rtspd);
-		g->ray.ply = g->ray.old_plane * sin(g->key.rtspd) + g->ray.ply * cos(g->key.rtspd);
+		p->old_dir = p->dirx;
+		p->dirx = p->dirx * cos(k->rtspd) - p->diry * sin(k->rtspd);
+		p->diry = p->old_dir * sin(k->rtspd) + p->diry * cos(k->rtspd);
+		p->old_plane = p->plx;
+		p->plx = p->plx * cos(k->rtspd) - p->ply * sin(k->rtspd);
+		p->ply = p->old_plane * sin(k->rtspd) + p->ply * cos(k->rtspd);
 	}
-}
-
-int		deal_key(t_game *g)
-{
-	key_movement(g);
-	key_rotation(g);
-	return (0);
 }

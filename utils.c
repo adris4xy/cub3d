@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/03/05 18:32:29 by aortega-          #+#    #+#             */
+/*   Updated: 2020/03/05 18:34:11 by aortega-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <cub3d.h>
 
 int		set_side(t_game *g)
@@ -64,18 +76,18 @@ void	get_texturesaux(t_game *g)
 	}
 }
 
-void    ft_error(char *s, t_game *g)
+void	ft_error(char *s, t_game *g)
 {
-    write(2, "\033[1;31m", 8);
-    write(2, s, ft_strlen(s));
-    g->buff = 0;
-    exit(-1);
+	write(2, "\033[1;31m", 8);
+	write(2, s, ft_strlen(s));
+	g->buff = 0;
+	exit(-1);
 }
 
-int    close_game(t_game *g)
+int		close_game(t_game *g)
 {
-    g->buff = 0;
+	g->buff = 0;
 	system("leaks cub3d");
-    exit (0);
-    return (0);
+	exit(0);
+	return (0);
 }

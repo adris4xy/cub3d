@@ -6,11 +6,11 @@
 #    By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/14 13:40:01 by egarcia-          #+#    #+#              #
-#    Updated: 2020/03/04 15:53:25 by aortega-         ###   ########.fr        #
+#    Updated: 2020/03/05 17:31:22 by aortega-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS	= cub3d.c keys.c read_map.c raycastingaux.c spritecastingaux.c generalcasting.c pathsmap.c utils.c
+SRCS	= cub3d.c keys.c read_map.c raycastingaux.c spritecastingaux.c general.c pathsmap.c utils.c
 
 OBJS	= $(SRCS:.c=.o)
 
