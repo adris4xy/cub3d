@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/14 13:03:33 by egarcia-          #+#    #+#             */
-/*   Updated: 2020/03/05 18:39:36 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/03/09 15:49:07 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,9 @@ void	init_data(t_game *g)
 	g->key.d = 0;
 	g->key.w = 0;
 	g->key.esc = 0;
+	g->ray.posx = 0;
+	g->ray.posy = 0;
+	g->spray_path = NULL;
 }
 
 void	ft_check_error(t_game *g)
@@ -52,9 +55,9 @@ void	ft_check_error(t_game *g)
 	unsigned int y;
 
 	x = 0;
-	if (g->mapwidth > 1280 || g->mapwidth < 200)
+	if (g->mapwidth > 2560 || g->mapwidth < 200)
 		g->mapwidth = 720;
-	if (g->mapheight > 720 || g->mapheight < 200)
+	if (g->mapheight > 1440 || g->mapheight < 200)
 		g->mapheight = 480;
 	if (!(g->f_color))
 		ft_error("Error\nFloor Color not asigned\n", g);
@@ -98,6 +101,8 @@ int		main(int argc, char **argv)
 	{
 		ft_mlxgame(argv[1], &g);
 	}
+	else if (argc == 3)
+		ft_save(argv, &g);
 	else
 		ft_error("error invalid arguments\n", &g);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/14 13:03:55 by egarcia-          #+#    #+#             */
-/*   Updated: 2020/03/05 18:39:48 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/03/09 14:38:17 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,10 @@ typedef struct		s_game
 	int				row;
 	int				color;
 	int				stripe;
+	char			*map;
+	char			*tmp;
+	unsigned int	j;
+	unsigned int	k;
 }             		t_game;
 
 //cub3d.c norma ok
@@ -190,11 +194,16 @@ void	spray_rayaux(t_game *g, int i);
 void	spray_rayaux1(t_game *g, int i);
 void	spray_raycasting(t_game *g);
 //readmap.c
-int		ft_ncol(char *map);
+void	ft_closemapaux(t_game *g,unsigned int x,unsigned int y);
 int		ft_closemap(t_game *g, unsigned int x, unsigned int y);
-void	ft_map(char *map, t_game *g, int row);
-void	ft_screensize(t_game *g,char *line);
 void	ft_read_map(char *file, t_game *g);
+void	ft_read_mapaux(t_game *g, int *row, int fd);
+void	ft_read_mapaux1(char *line, int *row, t_game *g);
+//readmap2.c norma ok
+int		ft_ncol(char *map);
+void	ft_map(char *map, t_game *g, int row);
+void	ft_mapaux(char *map, int x, int y, t_game *g);
+void	ft_screensize(t_game *g,char *line);
 //pathsmap.c norma ok
 void	ft_set_start(int x, int y, char *map, t_game *g);
 void	ft_path_s(char *line, t_game *g);
@@ -211,4 +220,11 @@ int		set_side(t_game *g);
 void	ft_raycasting(t_game *g);
 int		deal_key(t_game *g);
 void	ft_isspray(t_game *g, int x, int y);
+void	ft_save(char **argv, t_game *g);
+//save.c
+void	int_to_char(unsigned char *c, int i);
+int		bmp_header(int fd, t_game *g,int padsize);
+int		bmp_data(int fd, t_game *g, int padsize);
+int		take_screenshot(t_game *g);
+void	check_screenshot(t_game *g, char *argv);
 #endif

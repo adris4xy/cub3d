@@ -6,11 +6,11 @@
 #    By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/14 13:40:01 by egarcia-          #+#    #+#              #
-#    Updated: 2020/03/05 17:31:22 by aortega-         ###   ########.fr        #
+#    Updated: 2020/03/09 14:34:27 by aortega-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS	= cub3d.c keys.c read_map.c raycastingaux.c spritecastingaux.c general.c pathsmap.c utils.c
+SRCS	= cub3d.c keys.c read_map.c readmap2.c raycastingaux.c spritecastingaux.c general.c pathsmap.c utils.c save.c
 
 OBJS	= $(SRCS:.c=.o)
 
@@ -24,9 +24,9 @@ NAME	= cub3d
 all:		$(NAME)
 
 $(NAME):	$(OBJS)
-				gcc ${CFLAGS} ./libft/libft.a -o ${NAME} ${OBJS} ${LIBS} 
+				gcc ${CFLAGS} ./libft/libft.a -o ${NAME} ${OBJS} ${LIBS}
 
-clean:		
+clean:
 			$(RM) $(OBJS)
 
 fclean:		clean

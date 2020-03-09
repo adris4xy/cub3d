@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 15:51:38 by aortega-          #+#    #+#             */
-/*   Updated: 2020/03/05 18:19:56 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/03/09 14:38:04 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,16 @@ void	ft_isspray(t_game *g, int x, int y)
 	g->spray[g->n_spray].posx = x + 0.5;
 	g->spray[g->n_spray].posy = y + 0.5;
 	g->n_spray++;
+}
+
+void	ft_save(char **argv, t_game *g)
+{
+	ft_read_map(argv[1], g);
+	g->mlx_ptr = mlx_init();
+	g->win_ptr = mlx_new_window(g->mlx_ptr, g->mapwidth, g->mapheight, "c");
+	g->ren.dataimg = mlx_new_image(g->mlx_ptr, g->mapwidth, g->mapheight);
+	get_textures(g);
+	g->buff = (int *)mlx_get_data_addr(g->ren.dataimg, &g->ren.bytes_per_pixel,
+				&g->ren.size_line, &g->ren.endian);
+	check_screenshot(g, argv[2]);
 }
