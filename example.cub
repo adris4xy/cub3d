@@ -5,7 +5,7 @@ WE ./textures/tile243.xpm
 EA ./textures/tile246.xpm
 S ./textures/scuanchy.xpm
 F 26,22,12
-C 88,5,5
+C 88,5,14
      11111111
  111 10000011
  121110000011

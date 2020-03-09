@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 12:15:05 by aortega-          #+#    #+#             */
-/*   Updated: 2020/03/05 18:31:05 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/03/09 16:15:53 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,12 +108,16 @@ void	ft_path_color(char *line, t_game *g)
 	{
 		i++;
 		ft_path_coloraux(line, i, g);
+		if (g->r > 255 || g->gr > 255 || g->b > 255)
+			ft_error("color invalid", g);
 		g->f_color = g->r * 65536 + g->gr * 256 + g->b;
 	}
 	else if (line[0] == 'C')
 	{
 		i++;
 		ft_path_coloraux(line, i, g);
+		if (g->r > 255 || g->gr > 255 || g->b > 255)
+			ft_error("color invalid", g);
 		g->c_color = g->r * 65536 + g->gr * 256 + g->b;
 	}
 }

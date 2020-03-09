@@ -6,7 +6,7 @@
 /*   By: aortega- <aortega-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/14 13:03:33 by egarcia-          #+#    #+#             */
-/*   Updated: 2020/03/09 15:49:07 by aortega-         ###   ########.fr       */
+/*   Updated: 2020/03/09 16:39:58 by aortega-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ void	ft_check_error(t_game *g)
 
 	x = 0;
 	if (g->mapwidth > 2560 || g->mapwidth < 200)
-		g->mapwidth = 720;
+		g->mapwidth = 2560;
 	if (g->mapheight > 1440 || g->mapheight < 200)
-		g->mapheight = 480;
+		g->mapheight = 1440;
 	if (!(g->f_color))
 		ft_error("Error\nFloor Color not asigned\n", g);
 	if (!(g->c_color) && g->f.texturefloor == 0)
@@ -94,11 +94,15 @@ void	ft_mlxgame(char *argv, t_game *g)
 
 int		main(int argc, char **argv)
 {
-	t_game g;
+	t_game	g;
+	char	*tmp;
 
 	init_data(&g);
 	if (argc == 2)
 	{
+		if ((tmp = ft_strchr(argv[1], '.')))
+			if (ft_strncmp(".cub", tmp, 5) != 0)
+				ft_error("bad extension", &g);
 		ft_mlxgame(argv[1], &g);
 	}
 	else if (argc == 3)
